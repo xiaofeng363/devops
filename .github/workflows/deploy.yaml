@@ -29,6 +29,10 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
+    - name: Debug AWS Identity
+      run: |
+        aws sts get-caller-identity
+
     # 3. 登录 ECR
     - name: Login to ECR
       run: |
@@ -61,9 +65,18 @@ jobs:
           --region $AWS_REGION \
           --name $EKS_CLUSTER
 
+    - name: Debug kubeconfig
+      run: |
+        kubectl config current-context
+
     - name: Test Kubernetes Access
       run: |
         kubectl get nodes
+
+    - name: Check RBAC
+      run: |
+        kubectl auth can-i get pods -A
+        kubectl auth can-i create deployments -n dev
 
     # 7. Helm 部署
     - name: Deploy with Helm
@@ -77,3 +90,13 @@ jobs:
           -f ./service/helm/values-dev.yaml \
           --set image.repository=$ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY \
           --set image.tag=${{ github.sha }}
+
+    - name: Debug Helm
+      run: |
+        helm list -A
+
+    - name: Check resources
+      run: |
+        kubectl get pods -n dev || true
+        kubectl get deploy -n dev || true
+
