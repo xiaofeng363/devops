@@ -48,7 +48,7 @@ jobs:
         docker build -t $ECR_REPOSITORY:${{ github.sha }} ./service/image
 
     - name: Scan Docker Image
-      uses: aquasecurity/trivy-action@v0
+      uses: aquasecurity/trivy-action@master
       with:
         image-ref: "${{ env.ECR_REPOSITORY }}:${{ github.sha }}"
         format: table
