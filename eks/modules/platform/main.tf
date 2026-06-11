@@ -75,9 +75,9 @@ module "eks" {
 
       instance_types = [var.instance_type]
 
-      min_size     = 1
+      min_size     = 2
       max_size     = 3
-      desired_size = 1
+      desired_size = 2
     }
 
     two = {
