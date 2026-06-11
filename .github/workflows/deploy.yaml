@@ -1,0 +1,79 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  AWS_REGION: us-east-2
+  ECR_REPOSITORY: devops/nginx
+  EKS_CLUSTER: dev-eks
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # 1. 拉代码
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    # 2. 配置 AWS 凭证
+    - name: Configure AWS
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    # 3. 登录 ECR
+    - name: Login to ECR
+      run: |
+        aws ecr get-login-password --region $AWS_REGION \
+        | docker login \
+          --username AWS \
+          --password-stdin \
+          $(aws sts get-caller-identity --query Account --output text).dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com
+
+    # 4. Build image
+    - name: Build Docker Image
+      run: |
+        docker build -t $ECR_REPOSITORY:${{ github.sha }} ./service/image
+
+    # 5. Push image
+    - name: Push Docker Image
+      run: |
+        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+        docker tag $ECR_REPOSITORY:${{ github.sha }} \
+          $ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:${{ github.sha }}
+
+        docker push \
+          $ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY:${{ github.sha }}
+
+    # 6. 配置 kubeconfig
+    - name: Configure kubeconfig
+      run: |
+        aws eks update-kubeconfig \
+          --region $AWS_REGION \
+          --name $EKS_CLUSTER
+
+    - name: Test Kubernetes Access
+      run: |
+        kubectl get nodes
+
+    # 7. Helm 部署
+    - name: Deploy with Helm
+      run: |
+        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+
+        helm upgrade --install dev ./service/helm \
+          -n dev \
+          --create-namespace \
+          -f ./service/helm/values.yaml \
+          -f ./service/helm/values-dev.yaml \
+          --set image.repository=$ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY \
+          --set image.tag=${{ github.sha }}
