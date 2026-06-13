@@ -21,8 +21,4 @@ output "cluster_name" {
   value       = module.eks.cluster_name
 }
 
-output "s3_bucket_name" {
-  description = "S3 bucket Name"
-  value       = module.s3_bucket.s3_bucket_id
-}
 

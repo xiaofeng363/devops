@@ -121,16 +121,3 @@ module "aws_load_balancer_controller" {
   ]
 }
 
-module "s3_bucket" {
-  source = "terraform-aws-modules/s3-bucket/aws"
-  version = "3.15.0"
-  bucket = lower("${var.environment}-s3-bucket-${random_string.suffix.result}")
-  acl    = "private"
-
-  control_object_ownership = true
-  object_ownership         = "ObjectWriter"
-
-  versioning = {
-    enabled = true
-  }
-}
