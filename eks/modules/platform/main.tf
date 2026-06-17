@@ -58,7 +58,7 @@ module "eks" {
     aws-ebs-csi-driver = {
       service_account_role_arn = module.irsa-ebs-csi.iam_role_arn
     }
-    metrics_server = {}
+    #   metrics_server = {}
   }
 
   vpc_id     = module.vpc.vpc_id
@@ -120,4 +120,49 @@ module "aws_load_balancer_controller" {
     module.eks
   ]
 }
+
+resource "helm_release" "argocd" {
+  name             = "argocd"
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+  version          = "9.5.15"
+  namespace        = "argocd"
+  create_namespace = true
+
+  depends_on = [
+    module.eks
+  ]
+  values = [
+    yamlencode({
+      server = {
+        additionalApplications = [
+          {
+            name      = "root-bootstrap"
+            namespace = "argocd"
+            project   = "default"
+            source = {
+              repoURL        = "https://github.com/xiaofeng363/devops"
+              targetRevision = "main"
+              path           = "service/helm/"
+            }
+            destination = {
+              server    = "https://kubernetes.default.svc"
+              namespace = "dev"
+            }
+            syncPolicy = {
+              automated = {
+                prune    = true
+                selfHeal = true
+              }
+              syncOptions = [
+                "CreateNamespace=true"
+              ]
+            }
+          }
+        ]
+      }
+    })
+  ]
+}
+
 
