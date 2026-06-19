@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "nginx-demo.fullname" . }}-deployment
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+
+  selector:
+    matchLabels:
+      app: {{ include "nginx-demo.name" . }}
+
+  template:
+    metadata:
+      labels:
+        app: {{ include "nginx-demo.name" . }}
+
+    spec:
+      containers:
+      - name: nginx
+
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+
+        ports:
+        - containerPort: 80
+
+        env:
+        - name: MY_POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+
+        command:
+        - /bin/sh
+        - -c
+        - |
+          envsubst < /tmp/index.html.template > /usr/share/nginx/html/index.html
+          nginx -g 'daemon off;'
+
+        volumeMounts:
+        - name: html-template
+          mountPath: /tmp/index.html.template
+          subPath: index.html.template
+
+      volumes:
+      - name: html-template
+        configMap:
+          name: {{ include "nginx-demo.fullname" . }}-index
