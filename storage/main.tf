@@ -28,15 +28,16 @@ module "ecr" {
   source = "terraform-aws-modules/ecr/aws"
 
   repository_name = "devops/nginx"
+  repository_image_tag_mutability = "MUTABLE"
   repository_lifecycle_policy = jsonencode({
     rules = [
       {
         rulePriority = 1,
-        description  = "Keep last 10 images",
+        description  = "Keep last 3 images",
         selection = {
           tagStatus   = "any",
           countType   = "imageCountMoreThan",
-          countNumber = 10
+          countNumber = 3
         },
         action = {
           type = "expire"

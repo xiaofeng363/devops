@@ -70,6 +70,13 @@ jobs:
     # update image tag
     - name: Update image tag in Git
       run: |
+        ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+        NEW_REPO="$ACCOUNT_ID.dkr.ecr.${{ env.AWS_REGION }}.amazonaws.com/$ECR_REPOSITORY"
+
+        # Update repository
+        sed -i "s|repository:.*|repository: \"$NEW_REPO\"|" service/helm/values.yaml
+
+        # Update tag
         sed -i "s/tag:.*/tag: \"${GITHUB_SHA}\"/" service/helm/values.yaml
 
         git config user.name "github-actions"
@@ -120,5 +127,4 @@ jobs:
     #   run: |
     #     kubectl get pods -n dev || true
     #     kubectl get deploy -n dev || true
-
 

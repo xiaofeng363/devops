@@ -135,6 +135,7 @@ resource "helm_release" "argocd" {
   values = [
     yamlencode({
       server = {
+        additionalApplicationsEnabled = true
         additionalApplications = [
           {
             name      = "root-bootstrap"
