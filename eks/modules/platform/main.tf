@@ -132,44 +132,12 @@ resource "helm_release" "argocd" {
   depends_on = [
     module.eks
   ]
-  values = [
-    yamlencode({
-      server = {
-        additionalApplicationsEnabled = true
-        additionalApplications = [
-          {
-            name      = "root-bootstrap"
-            namespace = "argocd"
-            project   = "default"
-            source = {
-              repoURL        = "https://github.com/xiaofeng363/devops"
-              targetRevision = "main"
-              path           = "service/helm/"
-              helm = {
-                valueFiles = [
-                  "values.yaml",
-                  "values-dev.yaml"
-                ]
-            }
-          }
-            destination = {
-              server    = "https://kubernetes.default.svc"
-              namespace = "dev"
-            }
-            syncPolicy = {
-              automated = {
-                prune    = true
-                selfHeal = true
-              }
-              syncOptions = [
-                "CreateNamespace=true"
-              ]
-            }
-          }
-        ]
-      }
-    })
-  ]
 }
 
 
+resource "helm_release" "argocd_app" {
+  name       = "argocd-app"
+  chart      = "${path.module}/argocd-applications"
+  namespace  = "argocd"
+  depends_on = [helm_release.argocd]
+}
