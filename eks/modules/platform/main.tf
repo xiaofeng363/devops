@@ -130,7 +130,7 @@ resource "helm_release" "argocd" {
   create_namespace = true
 
   depends_on = [
-    module.eks
+    module.aws_load_balancer_controller
   ]
 }
 
