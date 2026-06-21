@@ -5,10 +5,11 @@ This repository demonstrates a DevOps platform built on AWS EKS, leveraging:
 
 * Kubernetes (EKS)
 * Helm (multi-environment deployment)
+* GitHub Actions for CI
+* Argo CD for CD
+* AWS ECR for container image storage
 * ALB Ingress Controller
 * Horizontal Pod Autoscaler (HPA)
-* GitHub Actions CI/CD
-
 ***
 
 # 📊 1. Application Design (Logical Architecture)
@@ -40,15 +41,14 @@ This repository demonstrates a DevOps platform built on AWS EKS, leveraging:
 ***
 
 # 🔄 3. Pipeline Design (CI/CD)
-
-<img width="224" height="901" alt="image" src="https://github.com/user-attachments/assets/2666a817-ca1c-4037-a09b-9e6143773d3d" />
+<img width="291" height="558" alt="image" src="https://github.com/user-attachments/assets/e33717c1-a13b-4b2b-967b-919d10e8ca1b" />
 
 
 ## Description
 
-* CI/CD fully automated via GitHub Actions
+* CI/CD fully automated via GitHub Actions and Argocd
 * Docker image built and pushed to ECR
-* Helm manages deployment
+* Helm manages service yamls
 * Kubernetes performs rolling update
 * HPA scales Pods dynamically
 
