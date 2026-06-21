@@ -83,8 +83,8 @@ jobs:
         git config user.email "github-actions@github.com"
 
         git add service/helm/values.yaml
-        git commit --amend -m "Update image tag"
-        git push --force
+        git commit -m "Update image tag"
+        git push
 
     # # update kubeconfig
     # - name: Configure kubeconfig
