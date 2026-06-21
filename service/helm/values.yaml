@@ -1,0 +1,28 @@
+namespace: demo
+
+replicaCount: 5
+
+image:
+  repository: "207457247351.dkr.ecr.us-east-2.amazonaws.com/devops/nginx"
+  tag: "5e89c12b194a9b4f10f823809aa09e959337b495"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+  path: /
+  pathType: Prefix
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  cpuTarget: 50
+

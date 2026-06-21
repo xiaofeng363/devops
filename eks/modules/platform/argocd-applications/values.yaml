@@ -1,0 +1,11 @@
+application:
+  name: my-app
+  namespace: argocd
+  project: default
+
+  repoURL: https://github.com/xiaofeng363/devops
+  targetRevision: main
+  path: service/helm/
+
+  destinationNamespace: dev
+
