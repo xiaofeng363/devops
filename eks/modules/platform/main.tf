@@ -130,7 +130,15 @@ resource "helm_release" "argocd" {
   version          = "9.5.15"
   namespace        = "argocd"
   create_namespace = true
-
+  values = [
+    yamlencode({
+      server = {
+        extraArgs = [
+          "--insecure=true"
+        ]
+      }
+    })
+]
   depends_on = [
     module.aws_load_balancer_controller
   ]
@@ -139,7 +147,7 @@ resource "helm_release" "argocd" {
 
 resource "helm_release" "argocd_app" {
   name       = "argocd-app"
-  chart      = "${path.module}/argocd-applications"
+  chart      = "${path.module}/argocd"
   namespace  = "argocd"
   depends_on = [helm_release.argocd]
 }
