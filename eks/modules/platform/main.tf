@@ -74,6 +74,7 @@ module "eks" {
       name = "node-group-1"
 
       instance_types = [var.instance_type]
+      capacity_type  = "SPOT"
 
       min_size     = 2
       max_size     = 3
@@ -84,6 +85,7 @@ module "eks" {
       name = "node-group-2"
 
       instance_types = [var.instance_type]
+      capacity_type  = "SPOT"
 
       min_size     = 1
       max_size     = 2
