@@ -4,7 +4,7 @@ replicaCount: 5
 
 image:
   repository: "207457247351.dkr.ecr.us-east-2.amazonaws.com/devops/nginx"
-  tag: "6129f7c5d43d84aa4e7904daaa4e5e894b0ff5d6"
+  tag: "b0259bf0e30af7406396efbb3b80e893d4f9cd60"
   pullPolicy: IfNotPresent
 
 service:
