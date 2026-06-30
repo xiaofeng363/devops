@@ -140,11 +140,11 @@ Open the ALB endpoint in browser.
 # ✅ Future Improvements
 
 ```markdown
-- [ ] GitOps integration (ArgoCD)
+- [✓] GitOps integration (ArgoCD)
 - [ ] Canary / Blue-Green deployment
 - [ ] Prometheus + Grafana monitoring
 - [ ] Centralized logging (ELK / OpenSearch)
 - [ ] Combine HPA + VPA scaling
-- [ ] Replace with other images to provide more services
-- [ ] Introduce AI agent as service
+- [ ] Introduce more test (Helm and pytest)
+- [ ] Introduce AIOps
 ```
