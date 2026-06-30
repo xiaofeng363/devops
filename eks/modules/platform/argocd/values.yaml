@@ -5,7 +5,7 @@ application:
 
   repoURL: https://github.com/xiaofeng363/devops
   targetRevision: main
-  path: service/helm/
+  path: service/
 
   destinationNamespace: dev
 
