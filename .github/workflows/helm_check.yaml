@@ -1,0 +1,26 @@
+name: Check Helm
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'service/helm/**'
+  workflow_dispatch:
+
+
+jobs:
+  helm-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: helm/actions@v1
+        with:
+          helm-version: v3.21.1
+
+
+      - name: Helm Lint
+        run: helm lint service/helm
+
+      - name: Helm Template
+        run: helm template service/helm
