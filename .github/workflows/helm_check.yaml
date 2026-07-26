@@ -8,16 +8,14 @@ on:
       - 'service/helm/**'
   workflow_dispatch:
 
-
 jobs:
   helm-checks:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: helm/actions@v1
+      - uses: azure/setup-helm@v4
         with:
-          helm-version: v3.21.1
-
+          version: v3.21.1
 
       - name: Helm Lint
         run: helm lint service/helm
