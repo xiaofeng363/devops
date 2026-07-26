@@ -3,5 +3,5 @@ name: nginx-demo
 description: NGINX demo showing hostname for ALB load balancing
 type: application
 version: 0.1.0
-appVersion: "1.25"
+appVersion: "1.26"
 
