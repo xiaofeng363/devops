@@ -1,5 +1,5 @@
 module "platform" {
-  source = "../modules/platform"
+  source = "../../modules/platform"
   environment     = var.environment
   region          = var.region
   cluster_version = var.cluster_version

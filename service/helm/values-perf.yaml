@@ -1,7 +1,0 @@
-namespace: perf
-replicaCount: 10
-
-hpa:
-  minReplicas: 8
-  maxReplicas: 20
-
